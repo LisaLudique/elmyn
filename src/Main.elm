@@ -1,15 +1,15 @@
 module Main exposing (..)
 
--- Press buttons to increment and decrement a counter.
+-- A text input for reversing text. Very useful!
 --
 -- Read how it works:
---   https://guide.elm-lang.org/architecture/buttons.html
+--   https://guide.elm-lang.org/architecture/text_fields.html
 --
 
-
 import Browser
-import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
+import Html exposing (Html, Attribute, div, input, text)
+import Html.Attributes exposing (..)
+import Html.Events exposing (onInput)
 
 
 
@@ -24,12 +24,14 @@ main =
 -- MODEL
 
 
-type alias Model = Int
+type alias Model =
+  { content : String
+  }
 
 
 init : Model
 init =
-  0
+  { content = "" }
 
 
 
@@ -37,26 +39,15 @@ init =
 
 
 type Msg
-  = Increment
-  | Decrement
-  | Reset
-  | PlusTen
+  = Change String
 
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
-    Increment ->
-      model + 1
+    Change newContent ->
+      { model | content = newContent }
 
-    Decrement ->
-      model - 1
-
-    Reset ->
-      0
-
-    PlusTen ->
-      model + 10
 
 
 -- VIEW
@@ -65,10 +56,7 @@ update msg model =
 view : Model -> Html Msg
 view model =
   div []
-    [ button [ onClick Decrement ] [ text "-" ]
-    , div [] [ text (String.fromInt model) ]
-    , button [ onClick Increment ] [ text "+" ]
-    , button [ onClick PlusTen ] [ text "+10" ]
-    , div [] []
-    , button [ onClick Reset ] [ text "Reset" ]
+    [ input [ placeholder "Text to reverse", value model.content, onInput Change ] []
+    , div [] [ text (String.reverse model.content) ]
+    , div [] [ text (String.fromInt (String.length model.content)) ]
     ]
